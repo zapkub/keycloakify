@@ -16,6 +16,7 @@ import { isInside } from "../../tools/isInside";
 import child_process from "child_process";
 import { rmSync } from "../../tools/fs.rmSync";
 import { existsAsync } from "../../tools/fs.existsAsync";
+import { MVN_CLI } from "../../shared/constants";
 
 export type BuildContextLike = BuildContextLike_generatePom & {
     keycloakifyBuildDirPath: string;
@@ -221,7 +222,7 @@ export async function buildJar(params: {
     }
 
     {
-        const mvnBuildCmd = `mvn clean install -Dmaven.repo.local="${pathJoin(keycloakifyBuildCacheDirPath, ".m2")}"`;
+        const mvnBuildCmd = `${MVN_CLI} clean install -Dmaven.repo.local="${pathJoin(keycloakifyBuildCacheDirPath, ".m2")}"`;
 
         await new Promise<void>((resolve, reject) =>
             child_process.exec(

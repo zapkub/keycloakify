@@ -1,7 +1,7 @@
 {
-    "name": "keycloakify",
+    "name": "@rungsikorn/keycloakify",
     "version": "11.9.2",
-    "description": "Framework to create custom Keycloak UIs",
+    "description": "Fork of keycloakify for test purpose",
     "repository": {
         "type": "git",
         "url": "git://github.com/keycloakify/keycloakify.git"
@@ -122,5 +122,6 @@
         "yauzl": "^2.10.0",
         "zod": "^3.17.10",
         "json5": "^2.2.3"
-    }
+    },
+    "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

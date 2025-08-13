@@ -87,3 +87,6 @@ export const KEYCLOAKIFY_LOGGING_VERSION = "1.0.3";
 export const KEYCLOAKIFY_LOGIN_JAR_BASENAME = `keycloakify-logging-${KEYCLOAKIFY_LOGGING_VERSION}.jar`;
 
 export const TEST_APP_URL = "https://my-theme.keycloakify.dev";
+
+export const VITE_CLI = process.env["VITE_CLI"] || "npx vite";
+export const MVN_CLI = process.env["MVN_CLI"] || "mvn";

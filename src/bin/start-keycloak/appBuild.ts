@@ -9,6 +9,7 @@ import { getAbsoluteAndInOsFormatPath } from "../tools/getAbsoluteAndInOsFormatP
 import * as fs from "fs";
 import { dirname as pathDirname, relative as pathRelative } from "path";
 import { z } from "zod";
+import { VITE_CLI } from "../shared/constants";
 
 export type BuildContextLike = {
     projectDirPath: string;
@@ -150,7 +151,7 @@ export async function appBuild(params: {
 
         const dIsSuccess = new Deferred<boolean>();
 
-        console.log(chalk.blue("$ npx vite build"));
+        console.log(chalk.blue(`$ ${VITE_CLI} build`));
 
         const child = child_process.spawn("npx", ["vite", "build"], {
             cwd: buildContext.projectDirPath,

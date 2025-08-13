@@ -12,7 +12,8 @@ import { assert, type Equals, is } from "tsafe/assert";
 import * as child_process from "child_process";
 import {
     VITE_PLUGIN_SUB_SCRIPTS_ENV_NAMES,
-    BUILD_FOR_KEYCLOAK_MAJOR_VERSION_ENV_NAME
+    BUILD_FOR_KEYCLOAK_MAJOR_VERSION_ENV_NAME,
+    VITE_CLI
 } from "./constants";
 import type { KeycloakVersionRange } from "./KeycloakVersionRange";
 import { exclude } from "tsafe";
@@ -182,7 +183,7 @@ export function getBuildContext(params: {
 
         try {
             output = child_process
-                .execSync("npx vite", {
+                .execSync(VITE_CLI, {
                     cwd: projectDirPath,
                     stdio: ["pipe", "pipe", "ignore"],
                     env: {
@@ -192,7 +193,7 @@ export function getBuildContext(params: {
                 })
                 .toString("utf8");
         } catch (error) {
-            throw new Error(`Failed to run \`npx vite\`: ${error}`);
+            throw new Error(`Failed to run \`${VITE_CLI}\`: ${error}`);
         }
 
         assert(

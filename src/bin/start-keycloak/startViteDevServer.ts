@@ -2,7 +2,7 @@ import * as child_process from "child_process";
 import { assert } from "tsafe/assert";
 import type { BuildContext } from "../shared/buildContext";
 import chalk from "chalk";
-import { VITE_PLUGIN_SUB_SCRIPTS_ENV_NAMES } from "../shared/constants";
+import { VITE_CLI, VITE_PLUGIN_SUB_SCRIPTS_ENV_NAMES } from "../shared/constants";
 import { Deferred } from "evt/tools/Deferred";
 
 export type BuildContextLike = {
@@ -16,7 +16,7 @@ export function startViteDevServer(params: {
 }): Promise<{ port: number }> {
     const { buildContext } = params;
 
-    console.log(chalk.blue(`$ npx vite dev`));
+    console.log(chalk.blue(`$ ${VITE_CLI} dev`));
 
     const child = child_process.spawn("npx", ["vite", "dev"], {
         cwd: buildContext.projectDirPath,
