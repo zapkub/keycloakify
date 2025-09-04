@@ -10,7 +10,7 @@ import { readThisNpmPackageVersion } from "../tools/readThisNpmPackageVersion";
 import * as os from "os";
 import { rmSync } from "../tools/fs.rmSync";
 
-export async function command(params: { buildContext: BuildContext }) {
+export async function command(params: { buildContext: BuildContext; skipJar?: boolean }) {
     const { buildContext } = params;
 
     exit_if_maven_not_installed: {
@@ -117,10 +117,16 @@ export async function command(params: { buildContext: BuildContext }) {
         });
     }
 
-    await buildJars({
-        resourcesDirPath,
-        buildContext
-    });
+    if (!params.skipJar) {
+        await buildJars({
+            resourcesDirPath,
+            buildContext
+        });
+    } else {
+        console.log(
+            chalk.yellow("⚠️  --skip-jar passed, skipping the jar building step.")
+        );
+    }
 
     rmSync(resourcesDirPath, { recursive: true });
 
