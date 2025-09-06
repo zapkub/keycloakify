@@ -183,6 +183,11 @@ export function getNodeModulesBinDirPath(params: {
 }): string | Promise<string> {
     const { packageJsonFilePath } = params ?? {};
 
+    if (process.env["KEYCLOAKIFY_NODE_MODULES_BIN_DIR"]) {
+        console.log('Using KEYCLOAKIFY_NODE_MODULES_BIN_DIR environment variable:', process.env["KEYCLOAKIFY_NODE_MODULES_BIN_DIR"]);
+        return process.env["KEYCLOAKIFY_NODE_MODULES_BIN_DIR"];
+    }
+
     return packageJsonFilePath === undefined
         ? getNodeModulesBinDirPath_bestEffort()
         : getNodeModulesBinDirPath_withPackageJsonFileDirPath({ packageJsonFilePath });

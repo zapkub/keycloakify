@@ -181,16 +181,21 @@ export function getBuildContext(params: {
         let output: string;
 
         try {
-            output = child_process
-                .execSync("npx vite", {
-                    cwd: projectDirPath,
-                    stdio: ["pipe", "pipe", "ignore"],
-                    env: {
-                        ...process.env,
-                        [VITE_PLUGIN_SUB_SCRIPTS_ENV_NAMES.RESOLVE_VITE_CONFIG]: "true"
-                    }
-                })
-                .toString("utf8");
+            if (process.env["KEYCLOAKIFY_PRE_RESOLVED_VITE_CONFIG"]) {
+                output = process.env["KEYCLOAKIFY_PRE_RESOLVED_VITE_CONFIG"];
+            } else {
+                output = child_process
+                    .execSync("npx vite", {
+                        cwd: projectDirPath,
+                        stdio: ["pipe", "pipe", "ignore"],
+                        env: {
+                            ...process.env,
+                            [VITE_PLUGIN_SUB_SCRIPTS_ENV_NAMES.RESOLVE_VITE_CONFIG]:
+                                "true"
+                        }
+                    })
+                    .toString("utf8");
+            }
         } catch (error) {
             throw new Error(`Failed to run \`npx vite\`: ${error}`);
         }
@@ -210,6 +215,12 @@ export function getBuildContext(params: {
     })();
 
     const packageJsonFilePath = (function getPackageJSonDirPath(upCount: number): string {
+
+        if (process.env["KEYCLOAKIFY_ABSOLUTE_PROJECT_DIR"]) {
+            console.log("use KEYCLOAKIFY_ABSOLUTE_PROJECT_DIR")
+            return pathJoin(process.env["KEYCLOAKIFY_ABSOLUTE_PROJECT_DIR"], "package.json");
+        }
+
         const dirPath = pathResolve(
             pathJoin(...[projectDirPath, ...Array(upCount).fill("..")])
         );
@@ -746,6 +757,12 @@ export function getBuildContext(params: {
         get fetchOptions() {
             return getProxyFetchOptions({
                 npmConfigGetCwd: (function callee(upCount: number): string {
+                    
+                    if (process.env["KEYCLOAKIFY_ABSOLUTE_PROJECT_DIR"]) {
+                        console.log("use KEYCLOAKIFY_ABSOLUTE_PROJECT_DIR")
+                        return process.env["KEYCLOAKIFY_ABSOLUTE_PROJECT_DIR"];
+                    }
+
                     const dirPath = pathResolve(
                         pathJoin(...[projectDirPath, ...Array(upCount).fill("..")])
                     );
@@ -767,7 +784,6 @@ export function getBuildContext(params: {
 
                         throw error;
                     }
-
                     return dirPath;
                 })(0)
             });

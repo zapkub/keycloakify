@@ -10,10 +10,18 @@ import { readThisNpmPackageVersion } from "../tools/readThisNpmPackageVersion";
 import * as os from "os";
 import { rmSync } from "../tools/fs.rmSync";
 
-export async function command(params: { buildContext: BuildContext; skipJar?: boolean }) {
+export async function command(params: {
+    buildContext: BuildContext;
+    skipJar?: boolean;
+    skipPostBuild: boolean;
+}) {
     const { buildContext } = params;
 
     exit_if_maven_not_installed: {
+        if (params.skipJar) {
+            break exit_if_maven_not_installed;
+        }
+
         let commandOutput: Buffer | undefined = undefined;
 
         try {
@@ -99,6 +107,15 @@ export async function command(params: { buildContext: BuildContext; skipJar?: bo
     });
 
     run_post_build_script: {
+        if (params.skipPostBuild) {
+            console.log(
+                chalk.yellow(
+                    `⚠️  --skip-post-build passed. Skipping the post build script step.`
+                )
+            );
+            break run_post_build_script;
+        }
+
         if (buildContext.bundler !== "vite") {
             break run_post_build_script;
         }
@@ -117,18 +134,21 @@ export async function command(params: { buildContext: BuildContext; skipJar?: bo
         });
     }
 
-    if (!params.skipJar) {
+    build_jar: {
+        if (params.skipJar) {
+            console.log(
+                chalk.yellow(
+                    `⚠️  --skip-jar passed, skipping the jar building step. ${resourcesDirPath} is left intact.`
+                )
+            );
+            break build_jar;
+        }
         await buildJars({
             resourcesDirPath,
             buildContext
         });
-    } else {
-        console.log(
-            chalk.yellow("⚠️  --skip-jar passed, skipping the jar building step.")
-        );
+        rmSync(resourcesDirPath, { recursive: true });
     }
-
-    rmSync(resourcesDirPath, { recursive: true });
 
     console.log(
         chalk.green(

@@ -16,9 +16,17 @@ export function getProxyFetchOptions(params: {
     const { npmConfigGetCwd } = params;
 
     const cfg = (() => {
-        const output = child_process
-            .execSync("npm config get", { cwd: npmConfigGetCwd })
-            .toString("utf8");
+        let output;
+
+        if (process.env["KEYCLOAKIFY_NPM_CONFIG_OUTPUT"]) {
+            console.log("Using KEYCLOAKIFY_NPM_CONFIG_OUTPUT env variable");
+            output = process.env["KEYCLOAKIFY_NPM_CONFIG_OUTPUT"];
+        } else {
+            output = child_process
+                .execSync("npm config get", { cwd: npmConfigGetCwd })
+                .toString("utf8");
+        }
+
 
         return output
             .split("\n")
@@ -112,6 +120,6 @@ function ensureSingleOrNone<T>(arg0: T | T[]) {
     if (arg0.length === 1) return arg0[0];
     throw new Error(
         "Illegal configuration, expected a single value but found multiple: " +
-            arg0.map(String).join(", ")
+        arg0.map(String).join(", ")
     );
 }

@@ -64,7 +64,7 @@ function skip(_context: any, argv: { options: Record<string, unknown> }) {
 }
 
 program
-    .command<{ skipJar: boolean | undefined }>({
+    .command<{ skipJar: boolean; skipPostBuild: boolean }>({
         name: "build",
         description: "Build the theme (default subcommand)."
     })
@@ -78,12 +78,26 @@ program
         description: "Skip output JAR file generation.",
         defaultValue: false
     })
+    .option({
+        key: "skipPostBuild",
+        name: (() => {
+            const name = "skip-post-build";
+            optionsKeys.push(name);
+            return name;
+        })(),
+        description: "Skip post-build steps.",
+        defaultValue: false
+    })
     .task({
         skip,
-        handler: async ({ projectDirPath, skipJar }) => {
+        handler: async ({ projectDirPath, skipJar, skipPostBuild }) => {
             const { command } = await import("./keycloakify");
 
-            await command({ buildContext: getBuildContext({ projectDirPath }), skipJar });
+            await command({
+                buildContext: getBuildContext({ projectDirPath }),
+                skipJar,
+                skipPostBuild
+            });
         }
     });
 
