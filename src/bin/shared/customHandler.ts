@@ -13,7 +13,6 @@ export type CommandName =
     | "initialize-login-theme"
     | "initialize-account-theme"
     | "initialize-admin-theme"
-    | "initialize-admin-theme"
     | "initialize-email-theme"
     | "copy-keycloak-resources-to-public"
     | "init";
